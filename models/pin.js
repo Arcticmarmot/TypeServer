@@ -5,7 +5,7 @@ let db = null;
 MongoClient.connect(url, { useNewUrlParser: true }).then(client => {
     console.log('connected...');
     const type_ = client.db("Type");
-    type_.createCollection('documents').then(res=>{
+    type_.createCollection('pins').then(res=>{
         db= type_.collection('pins');
         db.createIndex({ "createdAt": 1 },{expireAfterSeconds:600}).then(data=>{
             console.log('ttl succeed')
