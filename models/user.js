@@ -37,6 +37,20 @@ class User{
             cb(err);
         });
     }
+    static find_by_email_existence(email,cb){
+        db.findOne({email:email},{projection:{email:email}}).then((doc)=>{
+            cb(null,doc)
+        }).catch((err)=>{
+            cb(err);
+        });
+    }
+    static find_by_email_login(email,cb){
+        db.findOne({email:email},{projection:{email:1,password:1,isLogin:1}}).then((doc)=>{
+            cb(null,doc)
+        }).catch((err)=>{
+            cb(err);
+        });
+    }
     static find_by_email_records(email,cb){
         db.findOne({email:email},{projection:{records: 1}}).then((doc)=>{
             cb(null,doc)
@@ -80,7 +94,7 @@ class User{
         })
     }
     static countTypingTime(email,t,cb){
-        db.updateOne({email:email},{$set:{typingTime:t}}).then((data)=>{
+        db.updateOne({email:email},{$inc:{typingTime:t}}).then((data)=>{
             cb(null,data);
         }).catch(err=>{
             cb(err)
@@ -92,6 +106,20 @@ class User{
         }).catch(err=>{
             cb(err);
         })
+    }
+    static setLogin(email,isLogin,cb){
+        db.updateOne({email:email},{$set:{isLogin:isLogin}}).then((data)=>{
+            cb(null,data);
+        }).catch(err=>{
+            cb(err);
+        })
+    }
+    static find_by_email_profile(email,cb){
+        db.findOne({email:email},{projection:{username:1}}).then((data)=>{
+            cb(null,data)
+        }).catch((err)=>{
+            cb(err);
+        });
     }
 }
 module.exports = User;

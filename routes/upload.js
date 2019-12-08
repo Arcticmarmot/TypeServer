@@ -8,7 +8,8 @@ const auth = require('../utils/auth').auth;
 const jschardet = require('jschardet');
 const iconv = require('iconv-lite');
 const transFile = require('../utils/transFile').transFile;
-const createError = require('http-errors')
+const createError = require('http-errors');
+const checkUpload = require("../utils/constant").checkUpload;
 const uploadPath = './files';
 const maxFileSize = 100000;
 let fileEncoding = 'utf-8';
@@ -19,14 +20,13 @@ exports.submit = (req,res,next)=>{
         form.uploadDir = uploadPath;
         form.parse(req,(err,fields,files)=>{
             if(err) return next(createError(500,'upload fail',{text:'Unknown error'}));
+            if(!checkUpload(fields,files)) return next(createError(403,'fail',{text:''}))
             const file= files['file'];
-            console.log(file.type);
-            if((file.type.startsWith('text')  || file.type in fileType)
+            if((file.type in fileType || file.type.startsWith('text'))
                 && (file.size<maxFileSize)){
                 fs.readFile(file.path,(err,file) => {
                     if (err) return next(createError(403,"can't parse",{text:'encoding error'}));
                     fileEncoding = jschardet.detect(file).encoding;
-                    console.log(fileEncoding);
                     try {
                         file = transFile(iconv.decode(file, fileEncoding));
                         document.no_duplicated_insert_by_uploader(fields.title, fields.language,
@@ -73,110 +73,3 @@ fs.unlink(file.path,(err)=>{
 
 
 
-/*
-exports.submit = (req,res,next)=>{
-    const form = new formidable.IncomingForm()
-    form.uploadDir = uploadPath;
-    form.parse(req,(err,fields,files)=>{
-        if(err) next(err);
-        const file= files['file'];
-        console.log(file.type);
-        if((file.type.startsWith('text')  || file.type in fileType)
-            && (file.size<maxFileSize)){
-            fs.readFile(file.path,(err,data) => {
-                if (err) next(err);
-                fileEncoding = jschardet.detect(data).encoding;
-                console.log(fileEncoding);
-                try {
-                    data = iconv.decode(data, fileEncoding);
-                    data = deleteSpace(data);
-                    document.no_duplicated_insert(fields.title, fields.language,
-                        fields.public === 'true', data, (err) => {
-                            if (err) next(err);
-                        });
-                    res.writeHead(200, 'ok', {
-                        'Content-Type': 'application/json'
-                    });
-                    res.end();
-                    deleteFile(file.path);
-                } catch (e) {
-                    console.log(e)
-                    res.writeHead(404, 'upload fail, error in decoding', {
-                        'Content-Type': 'application/json'
-                    });
-                    res.end();
-                    deleteFile(file.path);
-                }
-            })
-        }else{
-            res.writeHead(404,"upload fail, it's so big",{
-                'Content-Type': 'application/json'
-            });
-            res.end();
-            deleteFile(file.path);
-        }
-
-    })
-};
-function deleteFile(path){
-    if(fs.existsSync(path)){
-        fs.unlink(path,()=>{
-            console.log('delete success')
-        });
-    }
-}
-
- */
-/*
-*application/x-msdownload
-*image/png
-application/octet-stream
-
-*
-* exports.submit = (req,res,next)=>{
-    const form = new formidable.IncomingForm()
-    form.uploadDir = uploadPath;
-    form.parse(req,(err,fields,files)=>{
-        if(err) next(err);
-        const file= files['file'];
-        console.log(file.type)
-        if((file.type.startsWith('text') || file.type in fileType)
-            && (file.size<maxFileSize)){
-            fs.readFile(file.path,(err,data) => {
-                if (err) next(err);
-                fileEncoding = jschardet.detect(data).encoding;
-                console.log(fileEncoding);
-                try {
-                    data = iconv.decode(data, 'window-1251');
-                    document.no_duplicated_insert(fields.title, fields.language,
-                        fields.public === 'true', data, (err) => {
-                            if (err) next(err);
-                        });
-                    res.writeHead(200, 'ok', {
-                        'Content-Type': 'application/json'
-                    });
-                    res.end();
-                } catch (e) {
-                    res.writeHead(404, 'upload fail', {
-                        'Content-Type': 'application/json'
-                    });
-                    res.end();
-                }
-            })
-        }else{
-            res.writeHead(404,'upload fail',{
-                'Content-Type': 'application/json'
-            });
-            res.end();
-        }
-        if(fs.existsSync(file.path)){
-            fs.unlink(file.path,()=>{
-                console.log('delete success')
-            });
-        }
-
-    })
-
-
-};
-* */

@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 const pin = require('../models/pin');
-const user = require('../models/user');
 const createError = require('http-errors');
 const succeed = require('../utils/constant').succeed;
 

@@ -16,8 +16,7 @@ exports.postResult = (req,res,next)=>{
             if(err) return next(createError(500,'record save fail',{text:'Unknown error'}));
             user.insert_record(req.cookies.uid,data.insertedId,(err,data)=>{
                 if(err) return next(createError(500,'record save fail',{text:'Unknown error'}));
-                req.session.user.typingTime += resultInfo.countTime;
-                user.countTypingTime(req.cookies.uid,req.session.user.typingTime,(err,data)=>{
+                user.countTypingTime(req.cookies.uid,resultInfo.countTime,(err,data)=>{
                     if(err) return next(createError(500,'record save fail',{text:'Unknown error'}));
                     succeed(res,'record save succeed',{text: 'record save succeed'})
                 })
