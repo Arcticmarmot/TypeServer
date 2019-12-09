@@ -1,5 +1,6 @@
 const languages = ['C/C++' ,'java','python' ,'javascript','default'];
 const PASSWORDPATTERN = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]{6,20}$/;
+exports.MAX_AGE = 1000*60*60*24*365*10;
 exports.fileType = {
     'application/xml':'',
     'application/json':'',
@@ -22,15 +23,16 @@ exports.checkRegister = (data)=>{
     return PASSWORDPATTERN.test(data.password)
 };
 exports.checkProfile = (username)=>{
-    return !!username.length>=2;
+    return username.length>=2;
 };
 function checkInArray(arr,element){
+    let isIn = false;
     arr.forEach(e=>{
         if(e === element){
-            return true;
+            isIn = true;
         }
     });
-    return false;
+    return isIn;
 }
 function checkFile(files){
     const file= files['file'];

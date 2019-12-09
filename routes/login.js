@@ -1,5 +1,6 @@
 const user = require('../models/user');
 const createError = require('http-errors');
+const {MAX_AGE} = require("../utils/constant");
 const succeed = require('../utils/constant').succeed;
 
 exports.login = (req,res,next)=>{
@@ -12,7 +13,7 @@ exports.login = (req,res,next)=>{
                 user.setLogin(userInfo.email,true,(err,data)=>{
                     if(err) return next(createError(500,'login fail',{text:'Unknown error'}));
                     req.session.user = {email:userInfo.email};
-                    res.cookie('uid',userInfo.email,{path:'/',maxAge:1000*60*60*12, httpOnly:false});
+                    res.cookie('uid',userInfo.email,{path:'/',maxAge:MAX_AGE, httpOnly:false});
                     succeed(res,'login succeed',{text: 'login succeed'})
                 })
             }else{

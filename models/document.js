@@ -102,6 +102,13 @@ class Document{
             });
         })
     }
+    static delete(id,cb){
+        db.deleteOne({_id:id}).then(data=>{
+            cb(null,data);
+        }).catch(err=>{
+            cb(err);
+        })
+    }
 
 
 }

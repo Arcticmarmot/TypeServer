@@ -1,15 +1,12 @@
 const document = require('../models/document');
 const authDocument = require('../models/auth-document');
-const url = require('url');
 const ObjectId = require('mongodb').ObjectId;
 const createError = require('http-errors');
 const auth = require('../utils/auth').auth;
 const succeed = require('../utils/constant').succeed;
 exports.form = (req,res,next)=>{
-    const parsed_url = url.parse(req.url);
-    let query = parsed_url.query.split('&');
-    let id = query[0].slice(3);
-    let authParam = query[1].slice(12) === 'true';
+    let id = req.query.id;
+    let authParam = req.query.articleAuth === 'true';
     try{
         id = ObjectId(id);
     }catch (err) {

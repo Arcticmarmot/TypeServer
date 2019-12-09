@@ -20,7 +20,7 @@ exports.submit = (req,res,next)=>{
         form.uploadDir = uploadPath;
         form.parse(req,(err,fields,files)=>{
             if(err) return next(createError(500,'upload fail',{text:'Unknown error'}));
-            if(!checkUpload(fields,files)) return next(createError(403,'fail',{text:''}))
+            if(!checkUpload(fields,files)) return next(createError(403,'fail',{text:''}));
             const file= files['file'];
             if((file.type in fileType || file.type.startsWith('text'))
                 && (file.size<maxFileSize)){

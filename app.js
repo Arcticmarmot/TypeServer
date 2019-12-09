@@ -1,4 +1,3 @@
-const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -22,6 +21,8 @@ const resetRouter = require('./routes/reset');
 const authAdminRouter = require('./routes/auth-admin');
 const recordRouter = require('./routes/record');
 const recordDetailRouter = require('./routes/record-detail');
+const deleteArticleRouter = require('./routes/delete-article');
+const {MAX_AGE} = require("./utils/constant");
 const app = express();
 
 // view engine setup
@@ -35,7 +36,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(session({
-  cookie: {maxAge: 1000*60*60*12,httpOnly:false},
+  cookie: {maxAge: MAX_AGE,httpOnly:false},
   secret: 'typewrite2019',
   resave: false,
   saveUninitialized: true,
@@ -76,19 +77,9 @@ app.get('/result',resultRouter.getResult);
 app.get('/record',recordRouter.getRecord);
 app.post('/result',resultRouter.postResult);
 app.post('/record_detail',recordDetailRouter.recordDetail);
+app.delete('/delete',deleteArticleRouter.deleteArticle);
 
-
-// catch 404 and forward to error handler
-/*app.use(function(req, res, next) {
-  next(createError(404));
-});*/
-
-// error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  //res.locals.message = err.message;
-  //res.locals.error = req.app.get('env') === 'development' ? err : {};
-  // render the error page
   res.writeHead(err.status || 500,err.message,
       {'Content-Type': 'application/json;charset=utf8'}
   );

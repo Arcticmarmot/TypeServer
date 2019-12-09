@@ -20,10 +20,10 @@ exports.send = (req,res,next)=>{
     const options = {
         from        : 'Typewrite <1048000853@qq.com>',
         to          : `${mailAddress}`,
-        subject        : '验证您的邮箱',
-        html           : '<h3>以下是您的验证码</h3>'+
-            `<p><strong>${PIN}</strong>，请输入后验证您的邮箱</p>` +
-            '<p>-  Typewrite团队</p>'
+        subject        : '请验证您的邮箱',
+        html           : '<h3><strong>以下是您的验证码</strong></h3>'+
+                        `<p style="font-family: 'Microsoft YaHei UI'"><strong>${PIN}</strong>，请输入后验证您的邮箱</p>` +
+                        '<p>       —— Arcticmarmot</p>'
     };
     mailTransport.sendMail(options, function(err, msg){
         if(err) return next(createError(500,'send fail',{text: 'Unknown error'}));
